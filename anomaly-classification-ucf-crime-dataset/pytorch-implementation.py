@@ -55,7 +55,7 @@ print(summary(MODEL, (1, 1, 64, 64)))
 
 # loss function and optimizer object initialization
 LOSS_FUNCTION = nn.CrossEntropyLoss()
-OPTIMIZER = torch.optim.Adam(model.parameters())
+OPTIMIZER = torch.optim.Adam(MODEL.parameters())
 
 # training loop
 for epoch in range(EPOCHS):
