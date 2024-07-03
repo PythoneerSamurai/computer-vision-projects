@@ -33,7 +33,7 @@ class ConvNet(nn.Module):
         self.c2 = nn.Conv2d(in_channels=64, out_channels=64, kernel_size=(3, 3), padding='same')
         self.l1 = nn.Linear(in_features=16384, out_features=128)
         self.l2 = nn.Linear(in_features=128, out_features=16)
-        self.l3 = nn.Linear(in_features=16, out_features=1)
+        self.l3 = nn.Linear(in_features=16, out_features=14)
         
     def forward(self, x):
         bn1 = self.bn1(x)
@@ -47,14 +47,14 @@ class ConvNet(nn.Module):
         l2 = self.l2(l1)
         l3 = self.l3(l2)
         
-        return F.sigmoid(l3)
+        return l3
     
 MODEL = ConvNet()
 MODEL.to(DEVICE)
 print(summary(MODEL, (1, 1, 64, 64)))
 
 # loss function and optimizer object initialization
-LOSS_FUNCTION = nn.BCELoss()
+LOSS_FUNCTION = nn.CrossEntropyLoss()
 OPTIMIZER = torch.optim.Adam(model.parameters())
 
 # training loop
