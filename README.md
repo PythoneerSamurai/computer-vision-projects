@@ -1,0 +1,1 @@
+This repository houses a number of my computer vision projects. All my models are uploaded on my kaggle, the download links are present in the txt file present in each folder. The code is present in each folder.
