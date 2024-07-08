@@ -1,7 +1,0 @@
-Both keras and pytorch models are uploaded on my kaggle. Open the link below to download the model in tar format.
-keras variant: 
-https://www.kaggle.com/models/pythonistasamurai/multi-region-bone-fracture-classification-models/keras
-pytorch variant: 
-https://www.kaggle.com/models/pythonistasamurai/multi-region-bone-fracture-classification-models/pytorch
-
-Both models have above 96% accuracy and a very low loss.
