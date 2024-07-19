@@ -5,7 +5,7 @@ import supervision as sv
 from ultralytics import YOLO
 
 # initializing the model object (using the yolov10x model I trained), and the VideoCapture object to read the test video
-MODEL = YOLO('/kaggle/input/scut-head-output/runs/detect/train/weights/last.pt')
+MODEL = YOLO('/kaggle/input/scut-head-output/runs/detect/train/weights/best.pt')
 capture = cv2.VideoCapture('/kaggle/input/test-video/cr.mp4')
 
 # defining the polygons to count the objects enclosed by them
