@@ -18,7 +18,6 @@ class FPSBasedTimer():
         for tracker_id in detections.tracker_id:
             self.tracker_id2frame_id.setdefault(tracker_id, self.frame_id)
             start_frame_id = self.tracker_id2frame_id[tracker_id]
-            print(self.frame_id, start_frame_id)
             time_duration = (self.frame_id - start_frame_id)/self.fps  # formula
             times.append(time_duration)
             
