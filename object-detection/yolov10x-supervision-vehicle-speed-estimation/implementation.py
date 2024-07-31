@@ -65,7 +65,12 @@ TRACE_ANNOTATOR = sv.TraceAnnotator(trace_length=60, thickness=3)
 LABEL_ANNOTATOR = sv.LabelAnnotator(color=sv.Color.BLACK)
 # initializing the ByteTrack object to keep track of the filtered detections through out the frames, and to get their tracker ids for labelling.
 TRACKER = sv.ByteTrack(frame_rate=FPS)
-# initializing a defaultdict object for storing the source pixel coordinates travelled by the objects (for conversion into target points).
+'''
+initializing a defaultdict object for storing the source pixel coordinates travelled by the objects (for conversion into target points).
+deque (doubly ended queue) is used here because it allows quicker appending and popping of elements on both ends of the container.
+later the starting y-coordinate of the detected objects and the ending y-coordinates of the object will be used to calculate the distance, and
+the starting y-coordinate is present at the end of the deque, and the ending y-coordinate is present at the beginning.
+'''
 coordinates = defaultdict(lambda: deque(maxlen=FPS))
 
 # a function that processes individual frames
@@ -82,6 +87,8 @@ def frame_processor(frame, inference):
     '''
     looping through tracker ids, saving the points they travelled, calculating the distance when the number of frames they travelled is more than half
     of the FPS.
+    note that we are only using the y-coordinate of the detected object's bounding box bottom center, this is because in reality the highway section
+    being used is straight, thus the x-axis is not changing, only the y-axis is changing.
     '''
     for tracker_id, [_, y] in zip(detections.tracker_id, points):
         coordinates[tracker_id].append(y)
