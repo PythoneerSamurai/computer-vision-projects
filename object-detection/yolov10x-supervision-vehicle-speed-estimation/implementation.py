@@ -15,9 +15,9 @@ WRITER = cv2.VideoWriter("/kaggle/working/output-video.mp4", cv2.VideoWriter.fou
 
 '''
 Defining the source and target matrix for perspective transformation.
-When trying to estimate an objects speed using a single camera, it becomes very inaccurate if we use the pixel values that the object travels in order
-to calculate it's speed, if the camera is placed at the front (not a top-down view). Taking the example of a highway, in an image the farther part of
-the highway is going to be smaller, and the pixel values travelled by the objects is going to be less, even though in reality the highway is equally
+When trying to estimate an object's speed using a single camera, it becomes very inaccurate if we use the pixel values that the object travels in order
+to calculate it's speed, that is if the camera is placed at the front (not a top-down view). Taking the example of a highway, in an image the farther part of
+the highway is going to be smaller, and the pixel values travelled by the objects are going to be less, even though in reality the highway is equally
 distanced in real life. This is why we have to transform the highway from the perspective of single camera, to a top down view of the highway, the latter 
 having width and height same as that of the highway in reality. The implementation is quite simple, we just have to define the source matrix (having the
 polygon coordinates of the section of the highway whose perspective we want to transform), and the target matrix (having the polygon coordinates of the
