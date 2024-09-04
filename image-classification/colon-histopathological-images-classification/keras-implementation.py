@@ -38,9 +38,8 @@ MODEL = keras.Sequential([
 '''MODEL.summary()'''
 
 # callbacks initialization
-EARLY_STOPPING = keras.callbacks.EarlyStopping(monitor="loss", mode="min", patience=5)
 MODEL_CHECKPOINT = keras.callbacks.ModelCheckpoint(filepath="colonHisto.keras", monitor="val_loss", save_best_only=True, mode="min", save_freq="epoch")
-CALLBACKS = [EARLY_STOPPING, MODEL_CHECKPOINT]
+CALLBACKS = [MODEL_CHECKPOINT]
 
 # parameters
 EPOCHS = 3
