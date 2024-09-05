@@ -10,7 +10,7 @@ from torchinfo import summary
 # parameters
 BATCH_SIZE = 32
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
-EPOCHS = 30
+EPOCHS = 50
 
 # data loading and transformations
 TRANSFORMS = v2.Compose([
