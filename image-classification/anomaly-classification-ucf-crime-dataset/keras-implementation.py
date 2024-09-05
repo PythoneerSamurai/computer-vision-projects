@@ -2,7 +2,7 @@
 import keras
 
 # data loading and handling
-DATA = keras.utils.image_dataset_from_directory('/kaggle/input/ucf-dataset/Train', image_size=(64, 64))
+DATA = keras.utils.image_dataset_from_directory('/kaggle/input/ucf-dataset/Train', image_size=(64, 64), batch_size=32)
 TRAIN_DATA = DATA.take(int(len(DATA)*0.7))
 VALIDATION_DATA = DATA.take(int(len(DATA)*0.3))
 
