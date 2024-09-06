@@ -2,8 +2,8 @@
 import keras
 
 # data loading and handling
-TRAIN_DATA = keras.utils.image_dataset_from_directory('/kaggle/input/cifake-real-and-ai-generated-synthetic-images/train', image_size=(32, 32))
-VAL_DATA = keras.utils.image_dataset_from_directory('/kaggle/input/cifake-real-and-ai-generated-synthetic-images/test', image_size=(32, 32))
+TRAIN_DATA = keras.utils.image_dataset_from_directory('/kaggle/input/cifake-real-and-ai-generated-synthetic-images/train', image_size=(32, 32), batch_size=32)
+VAL_DATA = keras.utils.image_dataset_from_directory('/kaggle/input/cifake-real-and-ai-generated-synthetic-images/test', image_size=(32, 32), batch_size=32)
 
 # model implementation
 MODEL = keras.Sequential([
