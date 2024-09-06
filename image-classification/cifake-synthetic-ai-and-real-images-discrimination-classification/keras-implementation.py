@@ -23,7 +23,7 @@ MODEL = keras.Sequential([
 ])
 
 # callbacks initialization
-EARLY_STOPPING = keras.callbacks.EarlyStopping(monitor="loss", mode="min", patience=7)
+EARLY_STOPPING = keras.callbacks.EarlyStopping(monitor="loss", mode="min", patience=5)
 MODEL_CHECKPOINT = keras.callbacks.ModelCheckpoint(filepath="cifake.keras", monitor="loss", save_best_only=True, mode="min", save_freq="epoch")
 CALLBACKS = [EARLY_STOPPING, MODEL_CHECKPOINT]
 
