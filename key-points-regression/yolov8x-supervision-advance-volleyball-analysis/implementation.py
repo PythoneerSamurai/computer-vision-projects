@@ -2,11 +2,11 @@
 import cv2  # importing open-cv library for image and video processing.
 import numpy as np  # importing numpy for the utilization of ndarrays.
 import supervision as sv  # importing supervision for handling and using the models' inference + for annotations.
-# importing gray2rgb for converting an image to rgb while visually keeping it in grayscale.
+# importing gray2rgb to convert an image to rgb while visually keeping it in grayscale.
 from skimage.color import gray2rgb
 from ultralytics import YOLO  # importing the ultralytics YOLO class for loading and using the trained YOLOv8 models.
 
-# specifying various paths for proper functioning of the code.
+# Specifying various paths for the proper functioning of the code.
 INPUT_VIDEO_PATH = "/kaggle/input/testing-video/clipped_video.mp4"
 OUTPUT_COURT_VIDEO_PATH = "/kaggle/working/processed_video.avi"
 OUTPUT_RADAR_VIDEO_PATH = "/kaggle/working/processed_court.avi"
@@ -21,19 +21,19 @@ KEY_POINTS_REGRESSION_MODEL_PATH = """
     /kaggle/input/yolov8x_volleyball_analysis_models/pytorch/default/1/key_points_regression_model.pt
 """
 
-# loading the radar volleyball court image into memory and fetching its attributes.
+# Loading the radar volleyball court image into memory and fetching its attributes.
 RADAR_IMAGE = cv2.imread(RADAR_IMAGE_PATH, cv2.IMREAD_UNCHANGED)
 RADAR_IMAGE_HEIGHT, RADAR_IMAGE_WIDTH, _ = RADAR_IMAGE.shape
 
-# loading the trained YOLOv8x models into memory.
+# Loading the trained YOLOv8x models into memory.
 BALL_DETECTION_MODEL = YOLO(BALL_DETECTION_MODEL_PATH)  # trained from scratch (yolov8x.yaml).
-PLAYERS_DETECTION_MODEL = YOLO(PLAYERS_DETECTION_MODEL_PATH)  # trained using pretrained weights (yolov8x.pt).
+PLAYERS_DETECTION_MODEL = YOLO(PLAYERS_DETECTION_MODEL_PATH)  # trained using pre-trained weights (yolov8x.pt).
 KEY_POINTS_REGRESSION_MODEL = YOLO(KEY_POINTS_REGRESSION_MODEL_PATH)  # trained from scratch (yolov8x-pose.yaml).
 
-# loading the input video into memory.
+# Loading the input video into memory.
 INPUT_VIDEO = cv2.VideoCapture(INPUT_VIDEO_PATH)
 
-# fetching the attributes of input video frames for later use.
+# Fetching the attributes of input video frames for later use.
 INPUT_VIDEO_FRAME_WIDTH, INPUT_VIDEO_FRAME_HEIGHT, INPUT_VIDEO_FPS = (
     int(INPUT_VIDEO.get(attribute))
     for attribute
@@ -44,11 +44,11 @@ INPUT_VIDEO_FRAME_WIDTH, INPUT_VIDEO_FRAME_HEIGHT, INPUT_VIDEO_FPS = (
 )
 )
 
-# defining parameters for the cv2.VideoWriter class.
+# Defining parameters for the cv2.VideoWriter class.
 FOURCC = cv2.VideoWriter.fourcc(*"mp4v")  # four-character-code.
 INPUT_VIDEO_FRAME_SIZE = (INPUT_VIDEO_FRAME_WIDTH, INPUT_VIDEO_FRAME_HEIGHT)
 
-# initializing a cv2.VideoWriter object for merging the annotated court frames into an output video.
+# Initializing a cv2.VideoWriter object for merging the annotated court frames into an output video.
 OUTPUT_COURT_VIDEO_WRITER = cv2.VideoWriter(
     filename=OUTPUT_COURT_VIDEO_PATH,
     fourcc=FOURCC,
@@ -56,7 +56,7 @@ OUTPUT_COURT_VIDEO_WRITER = cv2.VideoWriter(
     fps=INPUT_VIDEO_FPS,
 )
 
-# initializing a cv2.VideoWriter object for merging the annotated radar images into an output video.
+# Initializing a cv2.VideoWriter object for merging the annotated radar images into an output video.
 OUTPUT_RADAR_VIDEO_WRITER = cv2.VideoWriter(
     filename=OUTPUT_RADAR_VIDEO_PATH,
     fourcc=FOURCC,
@@ -67,7 +67,7 @@ OUTPUT_RADAR_VIDEO_WRITER = cv2.VideoWriter(
 """
 Defining the selected key points present on the radar image being used. These key points will be used to transform the
 perspective of the court in the input video frames to the radar court image via homography. This is necessary for
-accurately estimating the locations of the players on the court in real-life.
+accurately estimating the locations of the players on the court in real life.
 Later we use the key points regressed by the key points regression model as the source matrix and the list below as
 the target matrix for homography calculation.
 """
@@ -75,10 +75,10 @@ RADAR_IMAGE_PITCH_KEY_POINTS = [
     (739, 229), (1218, 229), (1218, 866), (739, 866)
 ]
 
-# initializing a supervision ColorPalette object defining the colors for annotating team one, team two, and referee.
+# Initializing a supervision ColorPalette object defining the colors for annotating team one, team two, and referee.
 COLOR_PALETTE = sv.ColorPalette.from_hex(["#FFFFFF", "#ff0000", "#00ff7f"])
 
-# initializing various supervision annotators for annotating the input video frames with model inferences.
+# Initializing various supervision annotators for annotating the input video frames with model inferences.
 ELLIPSE_ANNOTATOR = sv.EllipseAnnotator(
     color=COLOR_PALETTE,
     color_lookup=sv.ColorLookup.CLASS,
@@ -115,7 +115,7 @@ class ViewTransformer:
         return points.reshape(-1, 2).astype(np.float32)  # removing the additional axis added before.
 
 
-# defining a function to draw points on the radar court image based upon the transformed cartesian coordinates.
+# Defining a function to draw points on the radar court image based upon the transformed cartesian coordinates.
 def draw_points(points, image, color):
     x, y = int(points[0]), int(points[1])
     annotated_image = cv2.circle(
@@ -128,52 +128,52 @@ def draw_points(points, image, color):
     return annotated_image
 
 
-# defining the main function that deals with all inference handling, data annotation, and video writing.
+# Defining the main function that deals with all inference handling, data annotation, and video writing.
 def frame_processor(frame, ball_detection_inference, players_detection_inference, key_points_inference):
     try:
-        # converting inferences from YOLO format to supervision format.
+        # Converting inferences from YOLO format to supervision format.
         ball_detections = sv.Detections.from_ultralytics(ball_detection_inference)
         players_detections = sv.Detections.from_ultralytics(players_detection_inference)
         key_points_regressions = sv.KeyPoints.from_ultralytics(key_points_inference)
 
-        # fetching the input video frame court's regressed key points and the radar image court key points.
+        # Fetching the input video frame court's regressed key points and the radar image court key points.
         frame_ref_points = key_points_regressions.xy[0]
         frame_ref_key_points = sv.KeyPoints(xy=frame_ref_points[np.newaxis, ...])
         pitch_ref_points = np.array(RADAR_IMAGE_PITCH_KEY_POINTS)
 
-        # calculating homography.
+        # Calculating homography.
         view_transformer = ViewTransformer(
             source_matrix=frame_ref_points,
             target_matrix=pitch_ref_points
         )
 
-        # filtering player detections.
+        # Filtering player detections.
         team_one_detections = players_detections[players_detections.class_id == 1]
         team_two_detections = players_detections[players_detections.class_id == 2]
 
-        # fetching predicted players' cartesian coordinates.
+        # Fetching predicted players' cartesian coordinates.
         frame_team_one_coordinates = team_one_detections.get_anchors_coordinates(sv.Position.BOTTOM_CENTER)
         frame_team_two_coordinates = team_two_detections.get_anchors_coordinates(sv.Position.BOTTOM_CENTER)
 
-        # converting the players' cartesian coordinates from input video frame courts to the radar court image.
+        # Converting the players' cartesian coordinates from input video frame courts to the radar court image.
         pitch_team_one_coordinates = view_transformer.transform_points(frame_team_one_coordinates)
         pitch_team_two_coordinates = view_transformer.transform_points(frame_team_two_coordinates)
 
         court = RADAR_IMAGE.copy()
 
-        # drawing points on the radar court image.
+        # Drawing points on the radar court image.
         for points in pitch_team_one_coordinates:
             court = draw_points(points, court, (0, 0, 255))
         for points in pitch_team_two_coordinates:
             court = draw_points(points, court, (127, 255, 0))
 
-        # annotating the input video frames with inference data.
+        # Annotating the input video frames with inference data.
         annotated_frame = BOUNDING_BOX_ANNOTATOR.annotate(frame, ball_detections)
         annotated_frame = ELLIPSE_ANNOTATOR.annotate(frame, players_detections)
         annotated_frame = VERTEX_ANNOTATOR.annotate(frame, frame_ref_key_points)
         annotated_frame = cv2.resize(annotated_frame, (1920, 1080))
 
-        # writing the output videos
+        # Writing the output videos
         OUTPUT_RADAR_VIDEO_WRITER.write(court)
         OUTPUT_COURT_VIDEO_WRITER.write(annotated_frame)
     except:
@@ -199,7 +199,7 @@ while INPUT_VIDEO.isOpened():
             verbose=False,
         )[0]
 
-        # the yolov8x-pose key point regression model was trained on grayscale images for better accuracy.
+        # The yolov8x-pose key point regression model was trained on grayscale images for better accuracy.
         grayscale_resized_frame = cv2.cvtColor(
             resized_original_frame,
             cv2.COLOR_RGB2GRAY
