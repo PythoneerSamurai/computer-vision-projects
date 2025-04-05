@@ -6,4 +6,6 @@ Several of my advanced computer vision projects, such as object detection, segme
 
 Future projects related to both 2D Computer Vision and 3D Computer Vision will then be added to this repository.
 
-Sorry for the simple readme, have already written a lot of stuff about my projects on my portfolio :)
+Sorry for the simple readme, have already written a lot of stuff about my projects on my portfolio.
+
+Do star this repo and follow me on GitHub if you like my work :)
