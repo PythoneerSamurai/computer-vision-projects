@@ -61,7 +61,7 @@ class ConvNet(nn.Module):
     def forward(self, x):
         return self.sequential(x)
 
-  MODEL = ConvNet().cuda()
+MODEL = ConvNet().cuda()
 '''print(summary(MODEL, (32, 1, 128, 128)))'''
 
 # parameters and initializations
